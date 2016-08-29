@@ -1,0 +1,26 @@
+---
+- hosts: localhost
+  remote_user: matt
+  roles:
+    - role: systemd_nspawn
+      systemd_nspawn_machines:
+        - name: ansible-test
+          zone: test
+
+- hosts: ansible-test
+  become: no
+  tasks:
+    - name: link to systemd-resolved resolv.conf
+      file:
+        path: /etc/resolv.conf
+        src: /var/run/systemd/resolve/resolv.conf
+        state: link
+        force: yes
+    - name: enable services
+      service:
+        name: '{{ item }}'
+        state: started
+        enabled: yes
+      with_items:
+        - systemd-networkd
+        - systemd-resolved

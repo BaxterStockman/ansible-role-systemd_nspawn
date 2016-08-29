@@ -1,0 +1,18 @@
+- name: install arch-install-scripts
+  pacman:
+    name: arch-install-scripts
+    state: installed
+
+- name: create machine directories
+  file:
+    path: '/var/lib/machines/{{ systemd_nspawn_machine.name }}'
+    state: directory
+  loop_control:
+    loop_var: systemd_nspawn_machine
+  with_items: '{{ systemd_nspawn_machines }}'
+
+- name: pacstrap machine directories
+  command: 'pacstrap -c -d /var/lib/machines/{{ systemd_nspawn_machine.name }} base python2 sudo'
+  loop_control:
+    loop_var: systemd_nspawn_machine
+  with_items: '{{ systemd_nspawn_machines }}'

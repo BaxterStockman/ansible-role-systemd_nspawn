@@ -1,0 +1,22 @@
+---
+# tasks file for ansible-role-systemd-nspawn
+- name: ensure that systemd_nspawn_machines contains machine names
+  assert:
+    that: systemd_nspawn_machines is iterable
+  tags:
+    - always
+
+- name: Run pacstrap
+  include: pacstrap.yml
+  tags:
+    - pacstrap
+
+- name: include template tasks
+  include: template.yml
+  tags:
+    - template
+
+- name: include service tasks
+  include: service.yml
+  tags:
+    - service

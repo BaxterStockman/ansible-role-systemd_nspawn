@@ -1,0 +1,8 @@
+- name: enable systemd-nspawn services
+  service:
+    name: 'systemd-nspawn@{{ systemd_nspawn_machine.name }}'
+    state: started
+    enabled: yes
+  loop_control:
+    loop_var: systemd_nspawn_machine
+  with_items: '{{ systemd_nspawn_machines }}'
