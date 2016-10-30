@@ -1,2 +1,14 @@
-[Network]
-Zone={{ systemd_nspawn_machine.zone }}
+#jinja2: lstrip_blocks: True
+{# skip the `name: "mymachine"' and force_overwrite sections #}
+{% for section, options in systemd_nspawn_machine.iteritems() if section not in ['name', 'force_overwrite'] %}
+[{{ section | capitalize }}]
+    {% for option, args in options.iteritems() %}
+        {# this way we can just do a for loop regardless of the provided datatype #}
+        {% if args is string %}
+            {% set args = [args] %}
+        {% endif %}
+        {% for arg in args %}
+{{ option | capitalize }}={{ arg }}
+        {% endfor %}
+    {% endfor %}
+{% endfor %}
