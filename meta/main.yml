@@ -8,7 +8,7 @@ galaxy_info:
   # issue_tracker_url: http://example.com/issue/tracker
 
   # Some suggested licenses:
-  # - BSD (default)
+  # - MIT (default)
   # - MIT
   # - GPLv2
   # - GPLv3
@@ -42,7 +42,7 @@ galaxy_info:
   #  versions:
   #  - all
   #  - any
-  #- name: OpenBSD
+  #- name: OpenMIT
   #  versions:
   #  - all
   #  - 5.6
@@ -107,7 +107,7 @@ galaxy_info:
   #  - all
   #  - 2013.03
   #  - 2013.09
-  #- name: GenericBSD
+  #- name: GenericMIT
   #  versions:
   #  - all
   #  - any
@@ -115,7 +115,7 @@ galaxy_info:
   #  versions:
   #  - all
   #  - any
-  #- name: FreeBSD
+  #- name: FreeMIT
   #  versions:
   #  - all
   #  - 10.0
