@@ -1,14 +1,66 @@
 ---
 - hosts: localhost
-  remote_user: matt
+  vars:
+    bind_dirs:
+      - /tmp/bind1
+      - /tmp/bind2
+  pre_tasks:
+    - name: create directories for shared bind mounts
+      file:
+        state: directory
+        path: '{{ item }}'
+      with_items: '{{ bind_dirs }}'
   roles:
-    - role: systemd_nspawn
+    - role: '{{ playbook_dir | dirname | realpath | basename }}'
       systemd_nspawn_machines:
         - name: ansible-test
-          zone: test
+          force_overwrite: yes
+          network:
+            zone: test
+          files:
+            bind:
+              - '{{ bind_dirs | join(":") }}'
 
 - hosts: ansible-test
-  become: no
+  remote_user: root
+  tasks:
+    - name: create group
+      group:
+        name: '{{ group }}'
+        state: present
+      loop_control:
+        loop_var: group
+      with_items:
+        - users
+        - wheel
+    - name: create user
+      user:
+        name: matt
+        state: present
+        createhome: yes
+        group: users
+        groups: wheel
+    - name: install sudo
+      pacman:
+        name: sudo
+        state: present
+    - name: install build prereqs
+      pacman:
+        name: base-devel
+        state: present
+    - name: permit wheel group sudo access
+      lineinfile:
+        dest: /etc/sudoers
+        state: present
+        line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+        validate: 'visudo -cf %s'
+
+- hosts: ansible-test
+  remote_user: matt
+  become: yes
+  roles:
+    - role: BaxterStockman.module_packer
+    - role: BaxterStockman.module_makepkg
   tasks:
     - name: link to systemd-resolved resolv.conf
       file:
@@ -24,3 +76,11 @@
       with_items:
         - systemd-networkd
         - systemd-resolved
+    - name: install packer
+      makepkg:
+        name: packer
+        state: present
+    - name: install sabnzbd
+      packer:
+        name: sabnzbd
+        state: present
