@@ -1,0 +1,13 @@
+- name: configure nsswitch.conf to use nss-mymachines extension
+  lineinfile:
+    dest: /etc/nsswitch.conf
+    regexp: '^({{ systemd_nspawn_ns_db }}:\s+files)((?!.*\smymachines\s.*))$'
+    backrefs: yes
+    line: '\1 mymachines \2'
+    state: present
+  loop_control:
+    loop_var: systemd_nspawn_ns_db
+  with_items:
+    - passwd
+    - group
+    - hosts
