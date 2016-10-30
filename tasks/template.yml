@@ -1,8 +1,13 @@
+- name: create systemd-nspawn unit files parent directory
+  file:
+    path: '/etc/systemd/nspawn'
+    state: directory
+
 - name: create systemd-nspawn customization files
   template:
     src: 'machine.nspawn.j2'
     dest: '/etc/systemd/nspawn/{{ systemd_nspawn_machine.name }}.nspawn'
-    force: '{{ systemd_nspawn_machine.force | default("no") }}'
+    force: '{{ systemd_nspawn_machine.force_overwrite | default("no") }}'
   loop_control:
     loop_var: systemd_nspawn_machine
   with_items: '{{ systemd_nspawn_machines }}'
