@@ -10,13 +10,24 @@
   include: pacstrap.yml
   tags:
     - pacstrap
+    - systemd_nspawn.pacstrap
 
 - name: include template tasks
   include: template.yml
   tags:
     - template
+    - systemd_nspawn.template
 
 - name: include service tasks
   include: service.yml
   tags:
     - service
+    - systemd_nspawn.service
+
+- name: include name service switch tasks
+  include: nsswitch.yml
+  tags:
+    - nsswitch
+    - name_service
+    - systemd_nspawn.nsswitch
+    - systemd_nspawn.name_service
