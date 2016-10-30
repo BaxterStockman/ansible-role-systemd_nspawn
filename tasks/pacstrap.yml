@@ -11,8 +11,11 @@
     loop_var: systemd_nspawn_machine
   with_items: '{{ systemd_nspawn_machines }}'
 
+# TODO don't bother with this if the machine is already running
 - name: pacstrap machine directories
-  command: 'pacstrap -c -d /var/lib/machines/{{ systemd_nspawn_machine.name }} base python2 sudo'
+  command: 'pacstrap -c -d /var/lib/machines/{{ systemd_nspawn_machine.name }} base python2 sudo ^linux'
+  args:
+    creates: '/var/lib/machines/{{ systemd_nspawn_machine.name }}/var/cache/pacman/pkg'
   loop_control:
     loop_var: systemd_nspawn_machine
   with_items: '{{ systemd_nspawn_machines }}'
